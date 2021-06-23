@@ -112,7 +112,7 @@ public class RoutingRequest implements AutoCloseable, Cloneable, Serializable {
      *
      * @see org.opentripplanner.routing.algorithm.filterchain.ItineraryFilter
      */
-    public double maxDirectStreetDurationSeconds = Duration.ofHours(4).toSeconds();
+    public double maxDirectStreetDurationSeconds = Duration.ofHours(12).toSeconds();
 
     /**
      * This is the maximum duration in seconds for access/egress street searches. This is a
