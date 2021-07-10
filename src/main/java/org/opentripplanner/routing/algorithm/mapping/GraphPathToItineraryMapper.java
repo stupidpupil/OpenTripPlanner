@@ -187,13 +187,18 @@ public abstract class GraphPathToItineraryMapper {
         int[] legIndexPairs = {0, states.length - 1};
         List<int[]> legsIndexes = new ArrayList<int[]>();
 
+        TraverseMode lastMode = null;
         for (int i = 1; i < states.length - 1; i++) {
             var backState = states[i];
             var forwardState = states[i + 1];
             var backMode = backState.getBackMode();
             var forwardMode = forwardState.getBackMode();
 
-            var modeChange = backMode != forwardMode && backMode != null && forwardMode != null;
+            if (backMode != null) {
+                lastMode = backMode;
+            }
+
+            var modeChange = lastMode != forwardMode && lastMode != null && forwardMode != null;
             var rentalChange = isRentalPickUp(backState) || isRentalDropOff(backState);
             var parkingChange = backState.isBikeParked() != forwardState.isBikeParked()
                     || backState.isCarParked() != forwardState.isCarParked();
@@ -202,6 +207,12 @@ public abstract class GraphPathToItineraryMapper {
                 legIndexPairs[1] = i;
                 legsIndexes.add(legIndexPairs);
                 legIndexPairs = new int[] {i, states.length - 1};
+            }
+
+            if (rentalChange || parkingChange) {
+                /* Clear the lastMode, so that switching modes doesn't re-trigger a mode change
+                 * a few states latter. */
+                lastMode = null;
             }
         }
 
@@ -279,6 +290,8 @@ public abstract class GraphPathToItineraryMapper {
         // Interlining information is now in a separate field in Graph, not in edges.
         // But in any case, with Raptor this method is only being used to translate non-transit legs of paths.
         leg.interlineWithPreviousLeg = false;
+
+        leg.walkingBike = states[states.length - 1].isBackWalkingBike();
 
         leg.rentedBike = states[0].isBikeRenting();
 

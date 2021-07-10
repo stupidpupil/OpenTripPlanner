@@ -37,7 +37,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
           }
         }
       },
-      "generalizedCost": 2057,
+      "generalizedCost": 2087,
       "legs": [
         {
           "agencyTimeZoneOffset": -25200000,
@@ -139,6 +139,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         },
         {
@@ -160,7 +161,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
             "name": "-102309",
             "vertexType": "BIKESHARE"
           },
-          "generalizedCost": 21,
+          "generalizedCost": 51,
           "interlineWithPreviousLeg": false,
           "legGeometry": {
             "length": 2,
@@ -203,6 +204,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": true,
           "walkingLeg": true
         },
         {
@@ -267,6 +269,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": false
         },
         {
@@ -360,6 +363,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         },
         {
@@ -540,6 +544,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         }
       ],
@@ -551,7 +556,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
       "systemNotices": [ ],
       "tooSloped": false,
       "transitTimeSeconds": 575,
-      "waitTimeAdjustedGeneralizedCost": -999999,
+      "waitTimeAdjustedGeneralizedCost": -9999,
       "waitingTimeSeconds": 0,
       "walkOnly": false,
       "walkingAllTheWay": false
@@ -730,6 +735,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         },
         {
@@ -961,6 +967,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         }
       ],
@@ -972,7 +979,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
       "systemNotices": [ ],
       "tooSloped": false,
       "transitTimeSeconds": 533,
-      "waitTimeAdjustedGeneralizedCost": -999999,
+      "waitTimeAdjustedGeneralizedCost": -9999,
       "waitingTimeSeconds": 0,
       "walkOnly": false,
       "walkingAllTheWay": false
@@ -1151,6 +1158,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         },
         {
@@ -1382,6 +1390,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         }
       ],
@@ -1393,7 +1402,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
       "systemNotices": [ ],
       "tooSloped": false,
       "transitTimeSeconds": 601,
-      "waitTimeAdjustedGeneralizedCost": -999999,
+      "waitTimeAdjustedGeneralizedCost": -9999,
       "waitingTimeSeconds": 0,
       "walkOnly": false,
       "walkingAllTheWay": false
@@ -1521,6 +1530,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         },
         {
@@ -1701,6 +1711,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         }
       ],
@@ -1712,7 +1723,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
       "systemNotices": [ ],
       "tooSloped": false,
       "transitTimeSeconds": 791,
-      "waitTimeAdjustedGeneralizedCost": -999999,
+      "waitTimeAdjustedGeneralizedCost": -9999,
       "waitingTimeSeconds": 0,
       "walkOnly": false,
       "walkingAllTheWay": false
@@ -1754,7 +1765,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
           }
         }
       },
-      "generalizedCost": 2057,
+      "generalizedCost": 2087,
       "legs": [
         {
           "agencyTimeZoneOffset": -25200000,
@@ -1856,6 +1867,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         },
         {
@@ -1877,7 +1889,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
             "name": "-102309",
             "vertexType": "BIKESHARE"
           },
-          "generalizedCost": 21,
+          "generalizedCost": 51,
           "interlineWithPreviousLeg": false,
           "legGeometry": {
             "length": 2,
@@ -1920,6 +1932,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": true,
           "walkingLeg": true
         },
         {
@@ -1984,6 +1997,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": false
         },
         {
@@ -2077,6 +2091,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         },
         {
@@ -2257,6 +2272,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         }
       ],
@@ -2268,7 +2284,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
       "systemNotices": [ ],
       "tooSloped": false,
       "transitTimeSeconds": 575,
-      "waitTimeAdjustedGeneralizedCost": -999999,
+      "waitTimeAdjustedGeneralizedCost": -9999,
       "waitingTimeSeconds": 0,
       "walkOnly": false,
       "walkingAllTheWay": false
@@ -2310,7 +2326,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
           }
         }
       },
-      "generalizedCost": 2057,
+      "generalizedCost": 2087,
       "legs": [
         {
           "agencyTimeZoneOffset": -25200000,
@@ -2412,6 +2428,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         },
         {
@@ -2433,7 +2450,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
             "name": "-102309",
             "vertexType": "BIKESHARE"
           },
-          "generalizedCost": 21,
+          "generalizedCost": 51,
           "interlineWithPreviousLeg": false,
           "legGeometry": {
             "length": 2,
@@ -2476,6 +2493,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": true,
           "walkingLeg": true
         },
         {
@@ -2540,6 +2558,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": false
         },
         {
@@ -2633,6 +2652,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         },
         {
@@ -2813,6 +2833,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         }
       ],
@@ -2824,7 +2845,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.accessBikeR
       "systemNotices": [ ],
       "tooSloped": false,
       "transitTimeSeconds": 575,
-      "waitTimeAdjustedGeneralizedCost": -999999,
+      "waitTimeAdjustedGeneralizedCost": -9999,
       "waitingTimeSeconds": 0,
       "walkOnly": false,
       "walkingAllTheWay": false
@@ -2844,7 +2865,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.directBikeR
         "details": { },
         "fare": { }
       },
-      "generalizedCost": 885,
+      "generalizedCost": 915,
       "legs": [
         {
           "agencyTimeZoneOffset": -25200000,
@@ -2947,6 +2968,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.directBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         },
         {
@@ -2968,7 +2990,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.directBikeR
             "name": "-102309",
             "vertexType": "BIKESHARE"
           },
-          "generalizedCost": 21,
+          "generalizedCost": 51,
           "interlineWithPreviousLeg": false,
           "legGeometry": {
             "length": 2,
@@ -3011,6 +3033,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.directBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": true,
           "walkingLeg": true
         },
         {
@@ -3075,6 +3098,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.directBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": false
         },
         {
@@ -3178,6 +3202,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.directBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         }
       ],
@@ -3209,7 +3234,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.directBikeR
         "details": { },
         "fare": { }
       },
-      "generalizedCost": 622,
+      "generalizedCost": 652,
       "legs": [
         {
           "agencyTimeZoneOffset": -25200000,
@@ -3312,6 +3337,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.directBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         },
         {
@@ -3333,7 +3359,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.directBikeR
             "name": "-102309",
             "vertexType": "BIKESHARE"
           },
-          "generalizedCost": 21,
+          "generalizedCost": 51,
           "interlineWithPreviousLeg": false,
           "legGeometry": {
             "length": 2,
@@ -3376,6 +3402,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.directBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": true,
           "walkingLeg": true
         },
         {
@@ -3474,6 +3501,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.directBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": false
         }
       ],
@@ -3533,7 +3561,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.egressBikeR
           }
         }
       },
-      "generalizedCost": 1968,
+      "generalizedCost": 1998,
       "legs": [
         {
           "agencyTimeZoneOffset": -25200000,
@@ -3636,6 +3664,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.egressBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         },
         {
@@ -3840,6 +3869,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.egressBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         },
         {
@@ -3904,6 +3934,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.egressBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": false
         },
         {
@@ -3924,7 +3955,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.egressBikeR
             "name": "corner of way -102328 from 0 and Northwest Irving Street",
             "vertexType": "NORMAL"
           },
-          "generalizedCost": 51,
+          "generalizedCost": 81,
           "interlineWithPreviousLeg": false,
           "legGeometry": {
             "length": 2,
@@ -3968,6 +3999,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.egressBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         },
         {
@@ -4070,6 +4102,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.egressBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         }
       ],
@@ -4081,7 +4114,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.egressBikeR
       "systemNotices": [ ],
       "tooSloped": false,
       "transitTimeSeconds": 522,
-      "waitTimeAdjustedGeneralizedCost": -999999,
+      "waitTimeAdjustedGeneralizedCost": -9999,
       "waitingTimeSeconds": 0,
       "walkOnly": false,
       "walkingAllTheWay": false
@@ -4226,6 +4259,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.egressBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         },
         {
@@ -4457,6 +4491,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.egressBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         }
       ],
@@ -4468,7 +4503,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.egressBikeR
       "systemNotices": [ ],
       "tooSloped": false,
       "transitTimeSeconds": 603,
-      "waitTimeAdjustedGeneralizedCost": -999999,
+      "waitTimeAdjustedGeneralizedCost": -9999,
       "waitingTimeSeconds": 0,
       "walkOnly": false,
       "walkingAllTheWay": false
@@ -4630,6 +4665,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.egressBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         },
         {
@@ -4844,6 +4880,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.egressBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         }
       ],
@@ -4855,7 +4892,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.egressBikeR
       "systemNotices": [ ],
       "tooSloped": false,
       "transitTimeSeconds": 477,
-      "waitTimeAdjustedGeneralizedCost": -999999,
+      "waitTimeAdjustedGeneralizedCost": -9999,
       "waitingTimeSeconds": 0,
       "walkOnly": false,
       "walkingAllTheWay": false
@@ -4897,7 +4934,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.egressBikeR
           }
         }
       },
-      "generalizedCost": 1968,
+      "generalizedCost": 1998,
       "legs": [
         {
           "agencyTimeZoneOffset": -25200000,
@@ -5000,6 +5037,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.egressBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         },
         {
@@ -5204,6 +5242,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.egressBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         },
         {
@@ -5268,6 +5307,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.egressBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": false
         },
         {
@@ -5288,7 +5328,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.egressBikeR
             "name": "corner of way -102328 from 0 and Northwest Irving Street",
             "vertexType": "NORMAL"
           },
-          "generalizedCost": 51,
+          "generalizedCost": 81,
           "interlineWithPreviousLeg": false,
           "legGeometry": {
             "length": 2,
@@ -5332,6 +5372,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.egressBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         },
         {
@@ -5434,6 +5475,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.egressBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         }
       ],
@@ -5445,7 +5487,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.egressBikeR
       "systemNotices": [ ],
       "tooSloped": false,
       "transitTimeSeconds": 522,
-      "waitTimeAdjustedGeneralizedCost": -999999,
+      "waitTimeAdjustedGeneralizedCost": -9999,
       "waitingTimeSeconds": 0,
       "walkOnly": false,
       "walkingAllTheWay": false
@@ -5590,6 +5632,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.egressBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         },
         {
@@ -5821,6 +5864,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.egressBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         }
       ],
@@ -5832,7 +5876,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.egressBikeR
       "systemNotices": [ ],
       "tooSloped": false,
       "transitTimeSeconds": 663,
-      "waitTimeAdjustedGeneralizedCost": -999999,
+      "waitTimeAdjustedGeneralizedCost": -9999,
       "waitingTimeSeconds": 0,
       "walkOnly": false,
       "walkingAllTheWay": false
@@ -5994,6 +6038,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.egressBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         },
         {
@@ -6208,6 +6253,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.egressBikeR
               "streetNotes": [ ]
             }
           ],
+          "walkingBike": false,
           "walkingLeg": true
         }
       ],
@@ -6219,7 +6265,7 @@ org.opentripplanner.routing.algorithm.mapping.BikeRentalSnapshotTest.egressBikeR
       "systemNotices": [ ],
       "tooSloped": false,
       "transitTimeSeconds": 477,
-      "waitTimeAdjustedGeneralizedCost": -999999,
+      "waitTimeAdjustedGeneralizedCost": -9999,
       "waitingTimeSeconds": 0,
       "walkOnly": false,
       "walkingAllTheWay": false

@@ -770,6 +770,9 @@ type Leg {
     """Whether this leg is a transit leg or not."""
     transitLeg: Boolean
 
+    "Whether this leg is walking with a bike."
+    walkingBike: Boolean
+
     """Whether this leg is traversed with a rented bike."""
     rentedBike: Boolean
 
@@ -1637,6 +1640,24 @@ type QueryType {
         argument (e.g. `itineraryFiltering = 0.5` → 200% worse itineraries are filtered).
         """
         itineraryFiltering: Float
+
+        """
+        A multiplier for how bad biking is, compared to being in transit for equal
+        lengths of time. Default value: 2.0
+        """
+        bikeReluctance: Float
+
+        """
+        A multiplier for how bad walking with a bike is, compared to being in transit for equal
+        lengths of time. Default value: 5.0
+        """
+        bikeWalkingReluctance: Float
+
+        """
+        A multiplier for how bad driving is, compared to being in transit for equal
+        lengths of time. Default value: 3.0
+        """
+        carReluctance: Float
 
         """
         A multiplier for how bad walking is, compared to being in transit for equal

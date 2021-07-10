@@ -247,6 +247,7 @@ public class StateEditor {
             child.stateData.bikeRentalState = BikeRentalState.BEFORE_RENTING;
             child.stateData.currentMode = TraverseMode.WALK;
             child.stateData.bikeRentalNetworks = null;
+            child.stateData.backWalkingBike = false;
         } else {
             child.stateData.mayKeepRentedBicycleAtDestination = mayKeep;
             child.stateData.bikeRentalState = BikeRentalState.RENTING_FROM_STATION;
@@ -271,6 +272,7 @@ public class StateEditor {
             child.stateData.bikeRentalState = BikeRentalState.HAVE_RENTED;
             child.stateData.currentMode = TraverseMode.WALK;
             child.stateData.bikeRentalNetworks = null;
+            child.stateData.backWalkingBike = false;
         }
     }
 
@@ -319,6 +321,7 @@ public class StateEditor {
         child.stateData.carPickupState = state.stateData.carPickupState;
         child.stateData.carParked = state.stateData.carParked;
         child.stateData.bikeParked = state.stateData.bikeParked;
+        child.stateData.backWalkingBike = state.stateData.backWalkingBike;
     }
 
     public void setNonTransitOptionsFromState(State state) {
@@ -385,5 +388,9 @@ public class StateEditor {
     public void setBikeRentalNetwork(Set<String> networks) {
         cloneStateDataAsNeeded();
         child.stateData.bikeRentalNetworks = networks;
+    }
+
+    public State getBackState() {
+        return child.getBackState();
     }
 }
