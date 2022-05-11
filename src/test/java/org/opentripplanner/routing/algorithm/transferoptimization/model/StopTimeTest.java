@@ -1,6 +1,5 @@
 package org.opentripplanner.routing.algorithm.transferoptimization.model;
 
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
@@ -21,15 +20,14 @@ public class StopTimeTest {
 
   @Test
   public void duration() {
-    var later = StopTime.stopTime(subject.stop(), subject.time()+300);
+    var later = StopTime.stopTime(subject.stop(), subject.time() + 300);
     assertEquals(300, subject.duration(later));
     assertEquals(-300, later.duration(subject));
   }
 
   @Test
   public void testToString() {
-    assertEquals("[1 00:10:00]", subject.toString());
-
+    assertEquals("[1 0:10]", subject.toString());
   }
 
   @Test

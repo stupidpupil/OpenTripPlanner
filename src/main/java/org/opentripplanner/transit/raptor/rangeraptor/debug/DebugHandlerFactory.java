@@ -1,5 +1,7 @@
 package org.opentripplanner.transit.raptor.rangeraptor.debug;
 
+import javax.annotation.Nullable;
+import org.opentripplanner.transit.raptor.api.debug.DebugLogger;
 import org.opentripplanner.transit.raptor.api.path.Path;
 import org.opentripplanner.transit.raptor.api.request.DebugRequest;
 import org.opentripplanner.transit.raptor.api.transit.RaptorTripSchedule;
@@ -9,16 +11,13 @@ import org.opentripplanner.transit.raptor.rangeraptor.multicriteria.PatternRide;
 import org.opentripplanner.transit.raptor.rangeraptor.view.DebugHandler;
 import org.opentripplanner.transit.raptor.util.paretoset.ParetoSetEventListener;
 
-import javax.annotation.Nullable;
-
-
 /**
  * Use this factory to create debug handlers. If a routing request has not enabled debugging {@code
  * null} is returned. Use the {@link #isDebugStopArrival(int)} like methods before retrieving a
  * handler.
- *<p>
- * See the <b>package.md</b> for Debugging implementation notes in the
- * raptor root package {@link org.opentripplanner.transit}.
+ * <p>
+ * See the <b>package.md</b> for Debugging implementation notes in the raptor root package {@link
+ * org.opentripplanner.transit}.
  *
  * @param <T> The TripSchedule type defined by the user of the raptor API.
  */
@@ -27,19 +26,26 @@ public class DebugHandlerFactory<T extends RaptorTripSchedule> {
   private final DebugHandler<ArrivalView<?>> stopHandler;
   private final DebugHandler<Path<?>> pathHandler;
   private final DebugHandler<PatternRide<?>> patternRideHandler;
+  private final DebugLogger logger;
 
   public DebugHandlerFactory(DebugRequest request, WorkerLifeCycle lifeCycle) {
-    this.stopHandler = isDebug(request.stopArrivalListener())
+    this.stopHandler =
+      isDebug(request.stopArrivalListener())
         ? new DebugHandlerStopArrivalAdapter(request, lifeCycle)
         : null;
 
-    this.pathHandler = isDebug(request.pathFilteringListener())
+    this.pathHandler =
+      isDebug(request.pathFilteringListener())
         ? new DebugHandlerPathAdapter(request, lifeCycle)
         : null;
 
-    this.patternRideHandler = isDebug(request.patternRideDebugListener())
+    this.patternRideHandler =
+      isDebug(request.patternRideDebugListener())
         ? new DebugHandlerPatternRideAdapter(request, lifeCycle)
         : null;
+
+    this.logger = request.logger();
+    lifeCycle.onRouteSearch(logger::setSearchDirection);
   }
 
   /* Stop Arrival */
@@ -61,16 +67,14 @@ public class DebugHandlerFactory<T extends RaptorTripSchedule> {
     return stopHandler != null && stopHandler.isDebug(stop);
   }
 
-
   /* PatternRide */
 
   @Nullable
   public ParetoSetEventListener<PatternRide<?>> paretoSetPatternRideListener() {
     return patternRideHandler == null
-        ? null
-        : new ParetoSetDebugHandlerAdapter<>(patternRideHandler);
+      ? null
+      : new ParetoSetDebugHandlerAdapter<>(patternRideHandler);
   }
-
 
   /* path */
 
@@ -79,11 +83,20 @@ public class DebugHandlerFactory<T extends RaptorTripSchedule> {
     return pathHandler == null ? null : new ParetoSetDebugHandlerAdapter<>(pathHandler);
   }
 
+  @Nullable
+  public DebugHandler<Path<?>> debugPathArrival() {
+    return pathHandler;
+  }
+
+  /* logger */
+
+  public DebugLogger debugLogger() {
+    return logger;
+  }
 
   /* private methods */
 
   private boolean isDebug(Object handler) {
     return handler != null;
   }
-
 }

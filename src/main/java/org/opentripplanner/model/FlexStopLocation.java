@@ -2,6 +2,7 @@ package org.opentripplanner.model;
 
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Point;
+import org.opentripplanner.util.I18NString;
 
 /**
  * Location corresponding to a location where riders may request pickup or drop off, defined in the
@@ -9,11 +10,20 @@ import org.locationtech.jts.geom.Point;
  */
 
 public class FlexStopLocation extends TransitEntity implements StopLocation {
+
   private static final long serialVersionUID = 1L;
 
-  private String name;
+  private I18NString name;
+
+  private String description;
 
   private Geometry geometry;
+
+  private String zoneId;
+
+  private I18NString url;
+
+  private Point centroid;
 
   public FlexStopLocation(FeedScopedId id) {
     super(id);
@@ -24,34 +34,27 @@ public class FlexStopLocation extends TransitEntity implements StopLocation {
    * communication, eg. the name of the village where the service stops.
    */
   @Override
-  public String getName() {
+  public I18NString getName() {
     return name;
   }
 
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  /**
-   * Returns the geometry of this location, can be any type of geometry.
-   */
-  public Geometry getGeometry() {
-    return geometry;
-  }
-
-  public void setGeometry(Geometry geometry) {
-    this.geometry = geometry;
-  }
-
-  /**
-   * Short text or a number that identifies the location for riders. These codes are often used in
-   * phone-based reservation systems to make it easier for riders to specify a particular location.
-   * The stop_code can be the same as id if it is public facing. This field should be left empty for
-   * locations without a code presented to riders.
-   */
   @Override
-  public String getCode() {
-    return null;
+  public String getDescription() {
+    return description;
+  }
+
+  @Override
+  public I18NString getUrl() {
+    return url;
+  }
+
+  public void setUrl(I18NString url) {
+    this.url = url;
+  }
+
+  @Override
+  public String getFirstZoneAsString() {
+    return zoneId;
   }
 
   /**
@@ -59,7 +62,41 @@ public class FlexStopLocation extends TransitEntity implements StopLocation {
    */
   @Override
   public WgsCoordinate getCoordinate() {
-    Point centroid = geometry.getCentroid();
     return new WgsCoordinate(centroid.getY(), centroid.getX());
+  }
+
+  /**
+   * Returns the geometry of this location, can be any type of geometry.
+   */
+  @Override
+  public Geometry getGeometry() {
+    return geometry;
+  }
+
+  public void setGeometry(Geometry geometry) {
+    this.geometry = geometry;
+    this.centroid = geometry.getCentroid();
+  }
+
+  @Override
+  public boolean isPartOfStation() {
+    return false;
+  }
+
+  @Override
+  public boolean isPartOfSameStationAs(StopLocation alternativeStop) {
+    return false;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public void setName(I18NString name) {
+    this.name = name;
+  }
+
+  public void setZoneId(String zoneId) {
+    this.zoneId = zoneId;
   }
 }

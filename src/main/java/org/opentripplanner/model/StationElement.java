@@ -1,13 +1,17 @@
 package org.opentripplanner.model;
 
+import java.util.Objects;
+import javax.annotation.Nonnull;
+import org.opentripplanner.util.I18NString;
+
 /**
  * Acts as the supertype for all entities, except stations, created from the GTFS stops table. Most
- * of the fileds are shared between the types, and eg. in pathways the namespace any of them can be
+ * of the fields are shared between the types, and eg. in pathways the namespace any of them can be
  * used as from and to.
  */
 public abstract class StationElement extends TransitEntity {
 
-  private final String name;
+  private final I18NString name;
 
   private final String code;
 
@@ -15,34 +19,36 @@ public abstract class StationElement extends TransitEntity {
 
   private final WgsCoordinate coordinate;
 
-  private final WheelChairBoarding wheelchairBoarding;
+  private final WheelchairBoarding wheelchairBoarding;
 
   private final StopLevel level;
 
   private Station parentStation;
 
   public StationElement(
-      FeedScopedId id,
-      String name,
-      String code,
-      String description,
-      WgsCoordinate coordinate,
-      WheelChairBoarding wheelchairBoarding,
-      StopLevel level
+    FeedScopedId id,
+    I18NString name,
+    String code,
+    String description,
+    WgsCoordinate coordinate,
+    WheelchairBoarding wheelchairBoarding,
+    StopLevel level
   ) {
     super(id);
     this.name = name;
     this.code = code;
     this.description = description;
     this.coordinate = coordinate;
-    this.wheelchairBoarding = wheelchairBoarding;
+    this.wheelchairBoarding =
+      Objects.requireNonNullElse(wheelchairBoarding, WheelchairBoarding.NO_INFORMATION);
     this.level = level;
   }
 
   /**
    * Name of the station element if provided.
    */
-  public String getName() {
+  @Nonnull
+  public I18NString getName() {
     return name;
   }
 
@@ -60,14 +66,6 @@ public abstract class StationElement extends TransitEntity {
     return description;
   }
 
-  public double getLat() {
-    return getCoordinate().latitude();
-  }
-
-  public double getLon() {
-    return getCoordinate().longitude();
-  }
-
   /**
    * Center point/location for the station element. Returns the coordinate of the parent station, if
    * the coordinate is not defined for this station element.
@@ -83,19 +81,10 @@ public abstract class StationElement extends TransitEntity {
   }
 
   /**
-   * The coordinate for the given stop element exist. The {@link #getCoordinate()}
-   * will use the parent station coordinate if not set, but this method will return
-   * based on this instance; Hence the {@link #getCoordinate()} might return a coordinate,
-   * while this method return {@code false}.
-   */
-  boolean isCoordinateSet() {
-    return coordinate != null;
-  }
-
-  /**
    * Returns whether this station element is accessible for wheelchair users.
    */
-  public WheelChairBoarding getWheelchairBoarding() {
+  @Nonnull
+  public WheelchairBoarding getWheelchairBoarding() {
     return wheelchairBoarding;
   }
 
@@ -114,6 +103,10 @@ public abstract class StationElement extends TransitEntity {
     return parentStation;
   }
 
+  public void setParentStation(Station parentStation) {
+    this.parentStation = parentStation;
+  }
+
   /** Return {@code true} if this stop (element) is part of a station, have a parent station. */
   public boolean isPartOfStation() {
     return parentStation != null;
@@ -123,11 +116,21 @@ public abstract class StationElement extends TransitEntity {
    * Return {@code true} if this stop (element) has the same parent station as the other stop
    * (element).
    */
-  public boolean isPartOfSameStationAs(StationElement other) {
-    return isPartOfStation() && parentStation.equals(other.parentStation);
+  public boolean isPartOfSameStationAs(StopLocation other) {
+    if (other == null) {
+      return false;
+    }
+
+    return isPartOfStation() && parentStation.equals(other.getParentStation());
   }
 
-  public void setParentStation(Station parentStation) {
-    this.parentStation = parentStation;
+  /**
+   * The coordinate for the given stop element exist. The {@link #getCoordinate()} will use the
+   * parent station coordinate if not set, but this method will return based on this instance; Hence
+   * the {@link #getCoordinate()} might return a coordinate, while this method return {@code
+   * false}.
+   */
+  boolean isCoordinateSet() {
+    return coordinate != null;
   }
 }

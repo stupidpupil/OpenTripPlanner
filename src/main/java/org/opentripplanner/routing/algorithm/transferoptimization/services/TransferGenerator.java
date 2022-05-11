@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.opentripplanner.model.transfer.Transfer;
+import org.opentripplanner.model.transfer.ConstrainedTransfer;
 import org.opentripplanner.routing.algorithm.transferoptimization.model.StopTime;
 import org.opentripplanner.routing.algorithm.transferoptimization.model.TripStopTime;
 import org.opentripplanner.routing.algorithm.transferoptimization.model.TripToTripTransfer;
@@ -16,16 +16,16 @@ import org.opentripplanner.transit.raptor.api.transit.RaptorSlackProvider;
 import org.opentripplanner.transit.raptor.api.transit.RaptorTransfer;
 import org.opentripplanner.transit.raptor.api.transit.RaptorTransitDataProvider;
 import org.opentripplanner.transit.raptor.api.transit.RaptorTripSchedule;
-
+import org.opentripplanner.util.OTPFeature;
 
 /**
- * This class is responsible for finding all possible transfers between two trips. The configured
- * slack should be respected, and the transfers found here should be equivalent to the transfers
- * explored during routing (in Raptor).
+ * This class is responsible for finding all possible transfers between each pair of transit legs
+ * passed in. The configured slack should be respected, and the transfers found here should be
+ * equivalent to the transfers explored during routing (in Raptor).
  * <p>
  * This class also filters away transfers which cannot be used due to time constraints. For example,
- * if a transfer point is before the the earliest possible boarding or after the latest possible
- * arrival.
+ * if a transfer point is before the earliest possible boarding or after the latest possible
+ * arrival. Transfer constraints should also be respected.
  * <p>
  * This service does NOT combine transfers between various trips to form full paths. There are
  * potentially millions of permutations, so we do that later when we can prune the result.
@@ -34,7 +34,9 @@ import org.opentripplanner.transit.raptor.api.transit.RaptorTripSchedule;
  */
 public class TransferGenerator<T extends RaptorTripSchedule> {
 
-  private final TransferServiceAdaptor<T> guaranteedTransferServiceAdaptor;
+  private static final int SAME_STOP_TRANSFER_TIME = 0;
+
+  private final TransferServiceAdaptor<T> transferServiceAdaptor;
   private final RaptorSlackProvider slackProvider;
   private final RaptorTransitDataProvider<T> stdTransfers;
 
@@ -42,17 +44,17 @@ public class TransferGenerator<T extends RaptorTripSchedule> {
   private T toTrip;
 
   public TransferGenerator(
-      TransferServiceAdaptor<T> guaranteedTransferServiceAdaptor,
-      RaptorSlackProvider slackProvider,
-      RaptorTransitDataProvider<T> stdTransfers
+    TransferServiceAdaptor<T> transferServiceAdaptor,
+    RaptorSlackProvider slackProvider,
+    RaptorTransitDataProvider<T> stdTransfers
   ) {
-    this.guaranteedTransferServiceAdaptor = guaranteedTransferServiceAdaptor;
+    this.transferServiceAdaptor = transferServiceAdaptor;
     this.slackProvider = slackProvider;
     this.stdTransfers = stdTransfers;
   }
 
   public List<List<TripToTripTransfer<T>>> findAllPossibleTransfers(
-          List<TransitPathLeg<T>> transitLegs
+    List<TransitPathLeg<T>> transitLegs
   ) {
     List<List<TripToTripTransfer<T>>> result = new ArrayList<>();
     var fromLeg = transitLegs.get(0);
@@ -76,95 +78,155 @@ public class TransferGenerator<T extends RaptorTripSchedule> {
     return result;
   }
 
-
-  /* private methods */
+  private static <T> T last(List<T> list) {
+    return list.get(list.size() - 1);
+  }
 
   private List<TripToTripTransfer<T>> findTransfers(
-          T fromTrip,
-          StopTime fromTripDeparture,
-          T toTrip
+    T fromTrip,
+    StopTime fromTripDeparture,
+    T toTrip
   ) {
     this.fromTrip = fromTrip;
     this.toTrip = toTrip;
 
-    int firstStopPos = 1 + fromTrip.findDepartureStopPosition(
-        fromTripDeparture.time(),
-        fromTripDeparture.stop()
-    );
-    return  findAllTransfers(firstStopPos);
+    int firstStopPos = firstPossibleArrivalStopPos(fromTrip, fromTripDeparture);
+    return findAllTransfers(firstStopPos);
+  }
+
+  /** Given the trip and departure, find the first possible stop position to alight. */
+  private int firstPossibleArrivalStopPos(T trip, StopTime departure) {
+    return 1 + trip.findDepartureStopPosition(departure.time(), departure.stop());
   }
 
   private List<TripToTripTransfer<T>> findAllTransfers(int stopPos) {
-
     final List<TripToTripTransfer<T>> result = new ArrayList<>();
 
     while (stopPos < fromTrip.pattern().numberOfStopsInPattern()) {
-      var from = TripStopTime.arrival(fromTrip, stopPos);
+      boolean alightingPossible = fromTrip.pattern().alightingPossibleAt(stopPos);
+      if (alightingPossible) {
+        var from = TripStopTime.arrival(fromTrip, stopPos);
 
-      // First add high priority transfers
-      result.addAll(transferFromSameStop(from));
-      result.addAll(findStandardTransfers(from));
+        // First add high priority transfers
+        result.addAll(transferFromSameStop(from));
+        result.addAll(findStandardTransfers(from));
+      }
 
       ++stopPos;
     }
     return result;
   }
 
+  /**
+   * Find potential transfers where traveller does not have to "walk" between stops
+   */
   private Collection<TripToTripTransfer<T>> transferFromSameStop(TripStopTime<T> from) {
+    var result = new ArrayList<TripToTripTransfer<T>>();
+
     final int stop = from.stop();
-    var tx = guaranteedTransferServiceAdaptor.findTransfer(from, toTrip, stop);
 
-    final int earliestDepartureTime = earliestDepartureTime(from.time(), tx);
+    // Find all possible transfers on given stop index, starting on from.time
+    var possibleTransfers = toTrip.findDepartureStopPositions(from.time(), stop);
 
-    final int toTripStopPos = toTrip.findDepartureStopPosition(earliestDepartureTime, stop);
+    // Loop through transfers and decide whether they are possible
+    for (var stopPos : possibleTransfers) {
+      // Find transfer constraint for stop position
+      var tx = transferServiceAdaptor.findTransfer(from, toTrip, stop, stopPos);
 
-    if(toTripStopPos < 0) { return List.of(); }
+      if (!isAllowedTransfer(stopPos, tx)) {
+        continue;
+      }
 
-    return List.of(
-            new TripToTripTransfer<>(
-                    from,
-                    TripStopTime.departure(toTrip, toTripStopPos),
-                    null,
-                    tx
-            )
-    );
+      // Check whether traveller will have enough time to do the transfer
+      // We have to do it here because every stop position may have unique transfer constraint
+      // So it may be possible to transfer at stop position 2 but not on 1...
+      final int earliestDepartureTime = earliestDepartureTime(
+        from.time(),
+        SAME_STOP_TRANSFER_TIME,
+        tx
+      );
+      if (earliestDepartureTime > toTrip.departure(stopPos)) {
+        continue;
+      }
+
+      // Add as a possible result
+      result.add(new TripToTripTransfer<>(from, TripStopTime.departure(toTrip, stopPos), null, tx));
+    }
+
+    return result;
   }
 
+  /**
+   * Find potential transfers where traveller has to "walk" between stops
+   */
   private Collection<? extends TripToTripTransfer<T>> findStandardTransfers(TripStopTime<T> from) {
     final List<TripToTripTransfer<T>> result = new ArrayList<>();
-    Iterator<? extends RaptorTransfer> transfers = stdTransfers.getTransfers(from.stop());
+    Iterator<? extends RaptorTransfer> transfers = stdTransfers.getTransfersFromStop(from.stop());
 
+    // Loop through transfers and decide whether they are possible
     while (transfers.hasNext()) {
       var it = transfers.next();
       int toStop = it.stop();
 
-      var tx = guaranteedTransferServiceAdaptor.findTransfer(from, toTrip, toStop);
+      // Find all possible transfers on given stop index, starting on from.time
+      var possibleTransfers = toTrip.findDepartureStopPositions(from.time(), toStop);
 
-      int earliestDepartureTime = earliestDepartureTime(from.time(), it.durationInSeconds(), tx);
-      int toTripStopPos = toTrip.findDepartureStopPosition(earliestDepartureTime, toStop);
+      for (var stopPos : possibleTransfers) {
+        // Find transfer constraint for stop position
+        var tx = transferServiceAdaptor.findTransfer(from, toTrip, toStop, stopPos);
 
-      if(toTripStopPos < 0) { continue; }
+        if (!isAllowedTransfer(stopPos, tx)) {
+          continue;
+        }
 
-      var to = TripStopTime.departure(toTrip, toTripStopPos);
+        // Check whether traveller will have enough time to do the transfer
+        // We have to do it here because every stopPos may have unique transfer constraint
+        // So it may be possible to transfer at stop position 2 but not on 1 etc...
+        final int earliestDepartureTime = earliestDepartureTime(
+          from.time(),
+          it.durationInSeconds(),
+          tx
+        );
+        if (earliestDepartureTime > toTrip.departure(stopPos)) {
+          continue;
+        }
 
-      boolean alightingPossible = from.trip().pattern().alightingPossibleAt(from.stopPosition());
-      boolean boardingPossible = to.trip().pattern().boardingPossibleAt(to.stopPosition());
-
-      if (boardingPossible && alightingPossible) {
+        var to = TripStopTime.departure(toTrip, stopPos);
+        // Add as a possible result
         result.add(new TripToTripTransfer<>(from, to, it, tx));
       }
     }
+
     return result;
   }
 
-  private int earliestDepartureTime(int  fromTime, int transferDurationInSeconds, @Nullable Transfer tx) {
-    return earliestDepartureTime(fromTime, tx) + transferDurationInSeconds;
-  }
-
-  private int earliestDepartureTime(int  fromTime, @Nullable Transfer tx) {
-    return tx==null || tx.includeSlack()
-            ? fromTime + slackProvider.transitSlack(fromTrip.pattern())
-            : fromTime;
+  private int earliestDepartureTime(
+    int fromTime,
+    int transferDurationInSeconds,
+    @Nullable ConstrainedTransfer tx
+  ) {
+    // Ignore slack and walking-time for guaranteed and stay-seated transfers
+    if (tx != null && tx.getTransferConstraint().isFacilitated()) {
+      return fromTime;
+      // Ignore board and alight slack for min transfer time, but keep transfer slack
+    } else if (tx != null && tx.getTransferConstraint().isMinTransferTimeSet()) {
+      var minTransferTime = tx.getTransferConstraint().getMinTransferTime();
+      int transferDuration;
+      if (OTPFeature.MinimumTransferTimeIsDefinitive.isOn()) {
+        transferDuration = minTransferTime;
+      } else {
+        transferDuration = Math.max(minTransferTime, transferDurationInSeconds);
+      }
+      return fromTime + transferDuration + slackProvider.transferSlack();
+    } else {
+      return (
+        fromTime +
+        slackProvider.alightSlack(fromTrip.pattern().slackIndex()) +
+        transferDurationInSeconds +
+        slackProvider.transferSlack() +
+        slackProvider.boardSlack(toTrip.pattern().slackIndex())
+      );
+    }
   }
 
   @Nonnull
@@ -174,23 +236,24 @@ public class TransferGenerator<T extends RaptorTripSchedule> {
 
   @Nonnull
   private TripStopTime<T> findMinimumToStopTime(List<TripToTripTransfer<T>> transfers) {
-    return transfers.stream()
-            .map(TripToTripTransfer::to)
-            .min(Comparator.comparingInt(TripStopTime::time))
-            .orElseThrow();
+    return transfers
+      .stream()
+      .map(TripToTripTransfer::to)
+      .min(Comparator.comparingInt(TripStopTime::time))
+      .orElseThrow();
   }
 
   private void removeTransfersAfterLatestStopArrival(
-          int latestArrivalStopPos,
-          List<List<TripToTripTransfer<T>>> result
+    int latestArrivalStopPos,
+    List<List<TripToTripTransfer<T>>> result
   ) {
     int nextLatestArrivalStopPos = 0;
 
-    for (int i = result.size()-1; i >=0; --i) {
+    for (int i = result.size() - 1; i >= 0; --i) {
       List<TripToTripTransfer<T>> filteredTransfers = new ArrayList<>();
 
       for (TripToTripTransfer<T> tx : result.get(i)) {
-        if(tx.to().stopPosition() < latestArrivalStopPos) {
+        if (tx.to().stopPosition() < latestArrivalStopPos) {
           filteredTransfers.add(tx);
           nextLatestArrivalStopPos = Math.max(tx.from().stopPosition(), nextLatestArrivalStopPos);
         }
@@ -200,7 +263,21 @@ public class TransferGenerator<T extends RaptorTripSchedule> {
     }
   }
 
-  private static <T> T last(List<T> list) {
-    return list.get(list.size() - 1);
+  /**
+   * Based on trip pattern and transfer constraint check whether transfer at this point is possible
+   * @param stopPosition stop position in destination trip pattern
+   * @param tx optional transfer constraint
+   * @return whether this transfer is possible
+   */
+  private boolean isAllowedTransfer(int stopPosition, ConstrainedTransfer tx) {
+    // Check in trip pattern whether boarding is possible
+    if (!toTrip.pattern().boardingPossibleAt(stopPosition)) {
+      return false;
+    }
+    // Transfer is allowed if no constrained transfer exist
+    if (tx == null) {
+      return true;
+    }
+    return !tx.getTransferConstraint().isNotAllowed();
   }
 }

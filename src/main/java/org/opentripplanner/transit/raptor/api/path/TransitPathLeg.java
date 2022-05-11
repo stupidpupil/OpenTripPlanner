@@ -1,78 +1,131 @@
 package org.opentripplanner.transit.raptor.api.path;
 
 import java.util.Objects;
+import org.opentripplanner.transit.raptor.api.transit.RaptorConstrainedTransfer;
 import org.opentripplanner.transit.raptor.api.transit.RaptorTripSchedule;
+import org.opentripplanner.transit.raptor.api.view.BoardAndAlightTime;
 
 /**
  * Represent a transit leg in a path.
  *
  * @param <T> The TripSchedule type defined by the user of the raptor API.
  */
-public final class TransitPathLeg<T extends RaptorTripSchedule> extends IntermediatePathLeg<T> {
-    private static final int NOT_SET = -1;
+public final class TransitPathLeg<T extends RaptorTripSchedule> implements PathLeg<T> {
 
-    private final PathLeg<T> next;
-    private final T trip;
-    private int fromStopPosition = NOT_SET;
-    private int toStopPosition = NOT_SET;
+  private final T trip;
+  private final BoardAndAlightTime boardAndAlightTime;
+  private final RaptorConstrainedTransfer constrainedTransferAfterLeg;
+  private final int cost;
+  private final PathLeg<T> next;
+  private final int boardStop;
+  private final int alightStop;
 
-    public TransitPathLeg(int fromStop, int fromTime, int toStop, int toTime, int cost, T trip, PathLeg<T> next) {
-        super(fromStop, fromTime, toStop, toTime, cost);
-        this.next = next;
-        this.trip = trip;
+  public TransitPathLeg(
+    T trip,
+    BoardAndAlightTime boardAndAlightTime,
+    RaptorConstrainedTransfer constrainedTransferAfterLeg,
+    int cost,
+    PathLeg<T> next
+  ) {
+    this.trip = trip;
+    this.boardAndAlightTime = boardAndAlightTime;
+    this.constrainedTransferAfterLeg = constrainedTransferAfterLeg;
+    this.cost = cost;
+    this.next = next;
+    this.boardStop = trip.pattern().stopIndex(boardAndAlightTime.boardStopPos());
+    this.alightStop = trip.pattern().stopIndex(boardAndAlightTime.alightStopPos());
+  }
+
+  /**
+   * The trip schedule info object passed into Raptor routing algorithm.
+   */
+  public T trip() {
+    return trip;
+  }
+
+  public int getFromStopPosition() {
+    return boardAndAlightTime.boardStopPos();
+  }
+
+  public int getToStopPosition() {
+    return boardAndAlightTime.alightStopPos();
+  }
+
+  public RaptorConstrainedTransfer getConstrainedTransferAfterLeg() {
+    return constrainedTransferAfterLeg;
+  }
+
+  @Override
+  public int fromTime() {
+    return boardAndAlightTime.boardTime();
+  }
+
+  /**
+   * The stop index where the leg starts. Also called departure stop index.
+   */
+  @Override
+  public int fromStop() {
+    return boardStop;
+  }
+
+  @Override
+  public int toTime() {
+    return boardAndAlightTime.alightTime();
+  }
+
+  /**
+   * The stop index where the leg ends, also called arrival stop index.
+   */
+  @Override
+  public int toStop() {
+    return alightStop;
+  }
+
+  @Override
+  public int generalizedCost() {
+    return cost;
+  }
+
+  @Override
+  public boolean isTransitLeg() {
+    return true;
+  }
+
+  @Override
+  public PathLeg<T> nextLeg() {
+    return next;
+  }
+
+  public boolean isStaySeatedOntoNextLeg() {
+    return (
+      constrainedTransferAfterLeg != null &&
+      constrainedTransferAfterLeg.getTransferConstraint().isStaySeated()
+    );
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(boardAndAlightTime, trip, next);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
-
-    /** Create a builder to change board or alight stop place. */
-    public TransitPathLegBuilder<T> mutate() {
-        return new TransitPathLegBuilder<>(this);
+    if (o == null || getClass() != o.getClass()) {
+      return false;
     }
+    TransitPathLeg<?> that = (TransitPathLeg<?>) o;
+    return (
+      boardAndAlightTime.equals(that.boardAndAlightTime) &&
+      trip.equals(that.trip) &&
+      next.equals(that.next)
+    );
+  }
 
-    /**
-     * The trip schedule info object passed into Raptor routing algorithm. 
-     */
-    public T trip() {
-        return trip;
-    }
-
-    public int getFromStopPosition() {
-        if(fromStopPosition == NOT_SET) {
-            fromStopPosition = trip.findDepartureStopPosition(fromTime(), fromStop());
-        }
-        return fromStopPosition;
-    }
-
-    public int getToStopPosition() {
-        if(toStopPosition == NOT_SET) {
-            toStopPosition = trip.findArrivalStopPosition(toTime(), toStop());
-        }
-        return toStopPosition;
-    }
-
-    @Override
-    public final boolean isTransitLeg() {
-        return true;
-    }
-
-    @Override
-    public final PathLeg<T> nextLeg() {
-        return next;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) { return true; }
-        if (!super.equals(o)) { return false; }
-        TransitPathLeg<?> that = (TransitPathLeg<?>) o;
-        return trip.equals(that.trip) && next.equals(that.next);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), next, trip);
-    }
-
-    @Override
-    public String toString() {
-        return trip.pattern().debugInfo() + " " + asString(toStop());
-    }
+  @Override
+  public String toString() {
+    return trip.pattern().debugInfo() + " " + asString(toStop());
+  }
 }

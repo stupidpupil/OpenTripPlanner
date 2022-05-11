@@ -1,31 +1,39 @@
 package org.opentripplanner.transit.raptor.rangeraptor.debug;
 
-import org.opentripplanner.transit.raptor.util.AvgTimer;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
+import java.util.Collection;
+import org.opentripplanner.routing.framework.MicrometerUtils;
 
 public class WorkerPerformanceTimers {
-    /** The NOOP timers are used when the timer is turned off */
-    public static final WorkerPerformanceTimers NOOP = new WorkerPerformanceTimers("NOOP");
 
-    // Variables to track time spent
-    private final AvgTimer timerRoute;
-    private final AvgTimer timerByMinuteScheduleSearch;
-    private final AvgTimer timerByMinuteTransfers;
+  // Variables to track time spent
+  private final Timer timerRoute;
+  private final Timer timerByMinuteScheduleSearch;
+  private final Timer timerByMinuteTransfers;
 
-    public WorkerPerformanceTimers(String namePrefix) {
-        timerRoute = AvgTimer.timerMilliSec(namePrefix + ":route");
-        timerByMinuteScheduleSearch = AvgTimer.timerMicroSec(namePrefix + ":runRaptorForMinute Transit");
-        timerByMinuteTransfers = AvgTimer.timerMicroSec(namePrefix + ":runRaptorForMinute Transfers");
-    }
+  public WorkerPerformanceTimers(
+    String namePrefix,
+    Collection<String> timingTags,
+    MeterRegistry registry
+  ) {
+    var tags = MicrometerUtils.mapTimingTags(timingTags);
+    timerRoute = Timer.builder("raptor." + namePrefix + ".route").tags(tags).register(registry);
+    timerByMinuteScheduleSearch =
+      Timer.builder("raptor." + namePrefix + ".minute.transit").tags(tags).register(registry);
+    timerByMinuteTransfers =
+      Timer.builder("raptor." + namePrefix + ".minute.transfers").tags(tags).register(registry);
+  }
 
-    public AvgTimer timerRoute() {
-        return timerRoute;
-    }
+  public Timer timerRoute() {
+    return timerRoute;
+  }
 
-    public AvgTimer timerByMinuteScheduleSearch() {
-        return timerByMinuteScheduleSearch;
-    }
+  public Timer timerByMinuteScheduleSearch() {
+    return timerByMinuteScheduleSearch;
+  }
 
-    public AvgTimer timerByMinuteTransfers() {
-        return timerByMinuteTransfers;
-    }
+  public Timer timerByMinuteTransfers() {
+    return timerByMinuteTransfers;
+  }
 }

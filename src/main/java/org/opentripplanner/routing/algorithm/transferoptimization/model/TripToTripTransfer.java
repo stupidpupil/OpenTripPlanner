@@ -2,12 +2,11 @@ package org.opentripplanner.routing.algorithm.transferoptimization.model;
 
 import javax.annotation.Nullable;
 import org.opentripplanner.model.base.ToStringBuilder;
-import org.opentripplanner.model.transfer.Transfer;
+import org.opentripplanner.model.transfer.ConstrainedTransfer;
 import org.opentripplanner.transit.raptor.api.transit.RaptorTransfer;
 import org.opentripplanner.transit.raptor.api.transit.RaptorTripSchedule;
 
 /**
- *
  * @param <T> The TripSchedule type defined by the user of the raptor API.
  */
 public class TripToTripTransfer<T extends RaptorTripSchedule> {
@@ -15,26 +14,18 @@ public class TripToTripTransfer<T extends RaptorTripSchedule> {
   private final TripStopTime<T> from;
   private final TripStopTime<T> to;
   private final RaptorTransfer pathTransfer;
-  private final Transfer guaranteedTransfer;
+  private final ConstrainedTransfer constrainedTransfer;
 
   public TripToTripTransfer(
-      TripStopTime<T> from,
-      TripStopTime<T> to,
-      RaptorTransfer pathTransfer,
-      Transfer guaranteedTransfer
+    TripStopTime<T> from,
+    TripStopTime<T> to,
+    RaptorTransfer pathTransfer,
+    @Nullable ConstrainedTransfer constrainedTransfer
   ) {
     this.from = from;
     this.to = to;
     this.pathTransfer = pathTransfer;
-    this.guaranteedTransfer = guaranteedTransfer;
-  }
-
-  public TripToTripTransfer(
-          TripStopTime<T> from,
-          TripStopTime<T> to,
-          RaptorTransfer pathTransfer
-  ) {
-    this(from, to, pathTransfer, null);
+    this.constrainedTransfer = constrainedTransfer;
   }
 
   public TripStopTime<T> from() {
@@ -46,8 +37,8 @@ public class TripToTripTransfer<T extends RaptorTripSchedule> {
   }
 
   /**
-   * The time it takes to transfer between the given from and to stop.
-   * For a transfer at the same stop the time is zero.
+   * The time it takes to transfer between the given from and to stop. For a transfer at the same
+   * stop the time is zero.
    */
   public int transferDuration() {
     return sameStop() ? 0 : pathTransfer.durationInSeconds();
@@ -67,16 +58,17 @@ public class TripToTripTransfer<T extends RaptorTripSchedule> {
   }
 
   @Nullable
-  public Transfer guaranteedTransfer() {
-    return guaranteedTransfer;
+  public ConstrainedTransfer constrainedTransfer() {
+    return constrainedTransfer;
   }
 
   @Override
   public String toString() {
-    return ToStringBuilder.of(TripToTripTransfer.class)
-            .addObj("from", from)
-            .addObj("to", to)
-            .addObj("transfer", pathTransfer)
-            .toString();
+    return ToStringBuilder
+      .of(TripToTripTransfer.class)
+      .addObj("from", from)
+      .addObj("to", to)
+      .addObj("transfer", pathTransfer)
+      .toString();
   }
 }
